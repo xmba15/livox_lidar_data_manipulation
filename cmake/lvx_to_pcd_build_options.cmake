@@ -1,9 +1,3 @@
-option(BUILD_EXAMPLES "Option whether to build examples" OFF)
-if(BUILD_EXAMPLES)
-  message(STATUS "Also build examples")
-  add_subdirectory(examples)
-endif(BUILD_EXAMPLES)
-
 option(WITH_DEBUG "Enable debug" OFF)
 if(WITH_DEBUG)
   target_compile_definitions(${PROJECT_TARGET_LIB_NAME}

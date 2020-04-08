@@ -1,8 +1,11 @@
 set(LIBRARY_NAME ${PROJECT_TARGET_LIB_NAME})
 
 file(GLOB SOURCE_FILES
-  ${CMAKE_CURRENT_LIST_DIR}/${PROJECT_TARGET_LIB_NAME}/*.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/${PROJECT_TARGET_LIB_NAME}/*.hpp
+  ${CMAKE_CURRENT_LIST_DIR}/livox/LdsLvx.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/livox/LidarDataDistributeController.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/livox/LidarDataQueue.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/livox/LidarDataSource.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/livox/LvxFileHandler.cpp
 )
 
 add_library(${LIBRARY_NAME}
@@ -10,15 +13,10 @@ add_library(${LIBRARY_NAME}
      ${SOURCE_FILES}
 )
 
-target_include_directories(${LIBRARY_NAME} PUBLIC
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-  ${LIBAPR_INCLUDE_DIRS}
-)
-
-target_compile_features(${LIBRARY_NAME}
-  PRIVATE
-     cxx_std_11
+target_include_directories(${LIBRARY_NAME}
+  PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
 )
 
 target_compile_options(${LIBRARY_NAME}
@@ -29,8 +27,10 @@ target_compile_options(${LIBRARY_NAME}
 
 target_link_libraries(${LIBRARY_NAME}
   PUBLIC
-    Threads::Threads
-    ${LIVOX_SDK_LIBRARY}
-    ${LIBAPR_LIBRARIES}
+    Eigen3::Eigen
+    rapidxml::rapidxml
   PRIVATE
+    stdc++fs
+    Threads::Threads
+    ${APR_LIBRARY}
 )
