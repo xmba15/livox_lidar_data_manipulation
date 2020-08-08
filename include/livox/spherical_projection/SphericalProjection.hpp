@@ -9,10 +9,7 @@
 
 #pragma once
 
-#include <iostream>
-
 #include <algorithm>
-
 #include <array>
 #include <cmath>
 #include <cstdlib>
@@ -70,6 +67,9 @@ template <typename POINT_CLOUD_TYPE, typename VEC_POINT_TYPE> class SphericalPro
 
     ProjectionInfo project2D(const PointCloudType& point) const;
     SphericalImage projectSphericalImage(const VecPointType& pointVec) const;
+
+    std::size_t imgHeight() const;
+    std::size_t imgWidth() const;
 
  private:
     void updateInternalParams();

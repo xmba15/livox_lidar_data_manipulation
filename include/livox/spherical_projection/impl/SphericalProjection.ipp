@@ -75,6 +75,18 @@ SphericalProjection<POINT_CLOUD_TYPE, VEC_POINT_TYPE>::projectSphericalImage(con
 }
 
 template <typename POINT_CLOUD_TYPE, typename VEC_POINT_TYPE>
+std::size_t SphericalProjection<POINT_CLOUD_TYPE, VEC_POINT_TYPE>::imgHeight() const
+{
+    return m_imgHeight;
+}
+
+template <typename POINT_CLOUD_TYPE, typename VEC_POINT_TYPE>
+std::size_t SphericalProjection<POINT_CLOUD_TYPE, VEC_POINT_TYPE>::imgWidth() const
+{
+    return m_imgWidth;
+}
+
+template <typename POINT_CLOUD_TYPE, typename VEC_POINT_TYPE>
 void SphericalProjection<POINT_CLOUD_TYPE, VEC_POINT_TYPE>::updateInternalParams()
 {
     m_fovUpRad = lvx::deg2Rad(m_param.fovUpDeg);

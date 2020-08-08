@@ -21,34 +21,50 @@ using PointCloudPtr = typename PointCloud::Ptr;
 using VecPointType = std::vector<PointCloudType, Eigen::aligned_allocator<PointCloudType>>;
 using SphericalProjection = perception::SphericalProjection<PointCloudType, VecPointType>;
 
-cv::Mat toVisualCvMat(const SphericalProjection::SphericalImage& sphericalImage);
+inline cv::Mat toVisualCvMat(const SphericalProjection::SphericalImage& sphericalImage);
+inline std::vector<std::string> parseMetaDataFile(const std::string& metaDataFilePath);
 }  // namespace
 
 int main(int argc, char* argv[])
 {
-    if (argc != 2) {
-        std::cerr << "Usage: [app] [path/to/pcl/file]\n";
+    if (argc != 3) {
+        std::cerr << "Usage: [app] [path/to/pcl/file/list] [path/to/pcd/data]\n";
         return EXIT_FAILURE;
     }
 
-    const std::string pclFilePath = argv[1];
+    const std::string pclListFile = argv[1];
+    const std::string dataPath = argv[2];
+
+    std::vector<std::string> pcdPaths = ::parseMetaDataFile(pclListFile);
+    std::for_each(pcdPaths.begin(), pcdPaths.end(), [&dataPath](std::string& path) { path = dataPath + "/" + path; });
 
     perception::SphericalProjectionParam sphericalProjectionParam;
     SphericalProjection::Ptr sphericalProjector = std::make_shared<SphericalProjection>(sphericalProjectionParam);
 
-    PointCloudPtr inputPcl(new PointCloud);
-    if (pcl::io::loadPCDFile(pclFilePath, *inputPcl) == -1) {
-        std::cerr << "Failed to load pcl file\n";
-        return EXIT_FAILURE;
+    cv::VideoWriter video("output.avi", cv::VideoWriter::fourcc('X', 'V', 'I', 'D'), 10 /* fps */,
+                          cv::Size(sphericalProjector->imgWidth(), sphericalProjector->imgHeight()));
+
+    for (const std::string& pclFilePath : pcdPaths) {
+        PointCloudPtr inputPcl(new PointCloud);
+        if (pcl::io::loadPCDFile(pclFilePath, *inputPcl) == -1) {
+            std::cerr << "Failed to load pcl file\n";
+            return EXIT_FAILURE;
+        }
+
+        SphericalProjection::SphericalImage sphericalImage =
+            sphericalProjector->projectSphericalImage(inputPcl->points);
+
+        cv::Mat outputImage = ::toVisualCvMat(sphericalImage);
+        cv::imshow("Intensity Image", outputImage);
+        video.write(outputImage);
+
+        if (static_cast<char>(cv::waitKey(25)) == 27) {
+            break;
+        }
     }
 
-    SphericalProjection::SphericalImage sphericalImage = sphericalProjector->projectSphericalImage(inputPcl->points);
-
-    cv::Mat ouputImage = toVisualCvMat(sphericalImage);
-    cv::imwrite("output.png", ouputImage);
-    cv::imshow("Intensity Image", ouputImage);
-    cv::waitKey(0);
     cv::destroyAllWindows();
+    video.release();
 
     return EXIT_SUCCESS;
 }
@@ -72,5 +88,19 @@ cv::Mat toVisualCvMat(const SphericalProjection::SphericalImage& sphericalImage)
     }
 
     return output;
+}
+
+std::vector<std::string> parseMetaDataFile(const std::string& metaDataFilePath)
+{
+    std::ifstream inFile;
+    inFile.open(metaDataFilePath);
+    if (!inFile) {
+        throw std::runtime_error("Unable to open " + metaDataFilePath + "\n");
+    }
+
+    std::stringstream buffer;
+    buffer << inFile.rdbuf();
+
+    return lvx::split(buffer.str(), '\n');
 }
 }  // namespace

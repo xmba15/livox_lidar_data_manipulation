@@ -15,6 +15,8 @@
 #include <cstdint>
 #include <cstring>
 #include <limits>
+#include <string>
+#include <vector>
 
 #include "Constants.hpp"
 
@@ -144,5 +146,16 @@ bool almostEquals(const T val, const T correctVal, const T epsilon = std::numeri
 inline double deg2Rad(const double deg)
 {
     return deg * M_PI / 180.;
+}
+
+inline std::vector<std::string> split(const std::string& s, const char delimiter)
+{
+    std::stringstream ss(s);
+    std::string token;
+    std::vector<std::string> tokens;
+    while (std::getline(ss, token, delimiter)) {
+        tokens.emplace_back(token);
+    }
+    return tokens;
 }
 }  // namespace lvx

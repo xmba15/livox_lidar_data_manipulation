@@ -76,6 +76,22 @@ A dataset (with pcds from a street scene) can be downloaded with
 python3 scripts/download_livox_horizon_dataset.py
 ```
 
+### :camera: Spherical Projection ###
+As a bonus, I have implemented the method to project pointcloud into a 2d depth image, that can be used as input for deep learning method on point cloud, or for fast depth clustering.
+
+```bash
+# after make apps
+./build/examples/spherical_projection/spherical_projection [path/to/pcl/file/list] [path/to/pcd/data]
+
+# after downloading the dataset I introduced above
+./build/examples/spherical_projection/spherical_projection ./data/livox_horizon_data/pcd_files.txt ./data/livox_horizon_data/pcds
+
+```
+
+![spherical_projection](./docs/spherical_projection.gif)
+
+As the horizontal FOV of livox lidar is quite small compared to Velodyne lidar, the projected image size here is quite small.
+
 ## :gem: References ##
 - [livox ros sdk](https://github.com/Livox-SDK/livox_ros_driver)
 - [Low-cost Retina-like Robotic Lidars Based on Incommensurable Scanning](https://arxiv.org/pdf/2006.11034.pdf)
