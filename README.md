@@ -71,6 +71,11 @@ Here is visualization sample:
 
 ![visualization sample](./docs/visualization_sample.gif)
 
+A dataset (with pcds from a street scene) can be downloaded with
+```bash
+python3 scripts/download_livox_horizon_dataset.py
+```
+
 ## :gem: References ##
 - [livox ros sdk](https://github.com/Livox-SDK/livox_ros_driver)
 - [Low-cost Retina-like Robotic Lidars Based on Incommensurable Scanning](https://arxiv.org/pdf/2006.11034.pdf)
