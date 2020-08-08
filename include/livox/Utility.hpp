@@ -9,9 +9,12 @@
 
 #pragma once
 
+#include <algorithm>
 #include <array>
+#include <cmath>
 #include <cstdint>
 #include <cstring>
+#include <limits>
 
 #include "Constants.hpp"
 
@@ -129,5 +132,17 @@ inline std::array<uint8_t, 3> colorCodingDepthRGB(const float depth)
     }
 
     return std::array<uint8_t, 3>{r, g, b};
+}
+
+template <typename T>
+bool almostEquals(const T val, const T correctVal, const T epsilon = std::numeric_limits<T>::epsilon())
+{
+    const T maxXYOne = std::max({static_cast<T>(1.0f), std::fabs(val), std::fabs(correctVal)});
+    return std::fabs(val - correctVal) <= epsilon * maxXYOne;
+}
+
+inline double deg2Rad(const double deg)
+{
+    return deg * M_PI / 180.;
 }
 }  // namespace lvx

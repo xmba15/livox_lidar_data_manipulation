@@ -9,6 +9,9 @@
 
 #pragma once
 
+// spherical projection
+#include "spherical_projection/spherical_projection.hpp"
+
 // header to hold constants
 #include "Constants.hpp"
 
